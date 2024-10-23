@@ -15,31 +15,21 @@
   loop_control:
     loop_var: php_version_item
 
+- name: Setup mongodb
+  import_tasks: "setup-mongodb.yml"
 
-#- name: Setup git
-#  import_tasks: "setup-git.yml"
-
-# - name: Setup mongodb
-#   import_tasks: "setup-mongodb.yml"
-#
-# - include_role:
-#     name: nginxinc.nginx
-#
-# - name: Setup PHP
-#   import_tasks: "setup-php.yml"
-#
 # - name: Setup xdebug
 #   import_tasks: "setup-xdebug.yml"
-#
-# - name: Install packages from standard repos
-#   yum:
-#     name:
-#       - redis
-#       - ImageMagick
-#       - pkgconfig
-#       - sassc
-#     state: present
-#
+
+- name: Install packages from standard repos
+  yum:
+    name:
+      - redis
+      - ImageMagick
+      - pkgconfig
+      - sassc
+    state: present
+
 # - name: Install non-prompting PHP modules
 #   pear:
 #     name: "{{item}}"

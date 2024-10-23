@@ -9,7 +9,7 @@
   when:
     - mongod_enabled
     - mongodb_version is defined
-    - mongodb_version in ['3.2', '3.4', '3.6', '4.0']
+    - mongodb_version in [6.0, 7.0, 8.0]
 
 - name: Reload firewalld
   command: firewall-cmd --reload

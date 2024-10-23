@@ -33,7 +33,7 @@ mongod_restart_state: restarted
 mongodb_package_state: present
 
 # MongoDB package version to be installed
-mongodb_version:	3.6
+mongodb_version:	6.0
 
 # MongoDB packages to be installed. The value of `mongodb-org` is used by
 # default, as it is the meta-package which pulls in the server, cli and other
