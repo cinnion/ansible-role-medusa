@@ -19,6 +19,5 @@ galaxy_info:
 dependencies:
   - geerlingguy.repo-epel
   - geerlingguy.repo-remi
-  - geerlingguy.php-versions
   - nginxinc.nginx
   - geerlingguy.git

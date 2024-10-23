@@ -9,6 +9,9 @@ git_packages:
   - git-gui
   - git-gitk
 
+php_versions:
+  - 7.4
+
 php_enable_php_fpm: true
 
 php_fpm_pool_user:    nginx

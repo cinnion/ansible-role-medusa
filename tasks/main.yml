@@ -6,34 +6,15 @@
     owner: root
     mode: 0644
 
-- name: Include PHP 7.4 vars
-  include_vars:
-    file: php74-settings.yml
+- name: Install PHP.
+  include_tasks:
+    file: install-php.yml
+  vars:
+    php_version: "{{ php_version_item }}"
+  loop: "{{ php_versions }}"
+  loop_control:
+    loop_var: php_version_item
 
-- name: Install PHP 7.4
-  include_role:
-    name: geerlingguy.php
-
-#- name: Include PHP 8.0 vars
-#  include_vars:
-#    file: php80-settings.yml
-#
-#- name: Install PHP 8.0
-#  include_role:
-#    name: geerlingguy.php
-#  vars:
-#    php_version: "{{ php_version }}"
-#    php_enable_php_fpm: "{{ php_enable_php_fpm }}"
-#    php_fpm_daemon: "{{ php_fpm_daemon }}"
-#    php_webserver_daemon: "{{ php_webserver_daemon }}"
-#    php_webserver: "{{ php_webserver }}"
-#    php_enablerepo: "{{ php_enablerepo }}"
-#    php_packages: "{{ php_packages }}"
-#    php_fpm_pools: "{{ php_fpm_pools }}"
-
-# - name: Setup IUS repo
-#   import_role:
-#     name: ius-repo
 
 #- name: Setup git
 #  import_tasks: "setup-git.yml"

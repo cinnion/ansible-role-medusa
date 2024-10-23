@@ -1,0 +1,12 @@
+---
+- name: Include PHP {{php_version}} vars
+  include_vars:
+    file: "php{{ php_version }}-settings.yml"
+
+- name: Include PHP version module
+  include_role:
+    name: geerlingguy.php-versions
+
+- name: Do the PHP {{php_version}} install
+  include_role:
+    name: geerlingguy.php

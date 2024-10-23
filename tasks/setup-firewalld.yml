@@ -1,14 +1,16 @@
 ---
-- name: Set default zone to DMZ
-  firewalld:
-    zone: dmz
-    permanent: true
-    immediate: true
-    state: enabled
+- name: Set firewall zone to DMZ
+  command: firewall-cmd --set-default-zone=dmz
+  register: default_zone_set
+  changed_when:
+    - '"ZONE_ALREADY_SET" not in default_zone_set.stderr'
+  notify: Reload firewalld
 
 - name: Add http to allowed protocols
   firewalld:
+    zone: dmz
     service: http
     permanent: true
     immediate: true
     state: enabled
+  notify: Reload firewalld
