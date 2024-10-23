@@ -1,0 +1,9 @@
+---
+- include_tasks:
+    file: set-facts.yml
+
+- include_tasks:
+    file: enable-crb.yml
+
+- include_tasks:
+      file: setup-firewalld.yml

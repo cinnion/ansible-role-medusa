@@ -1,0 +1,14 @@
+---
+- name: Set default zone to DMZ
+  firewalld:
+    zone: dmz
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Add http to allowed protocols
+  firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled

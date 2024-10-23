@@ -1,0 +1,5 @@
+---
+- name: Ensure the CRB repository is enabled
+  community.general.dnf_config_manager:
+    name: crb
+    state: enabled

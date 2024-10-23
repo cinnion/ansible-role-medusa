@@ -1,2 +1,47 @@
 ---
-# defaults file for ansible-roles-medusa
+# defaults file for medusa-vm
+
+#
+# Git picks up git-core, git-core-doc and git-perl-Git
+#
+git_packages:
+  - git
+  - git-gui
+  - git-gitk
+
+php_enable_php_fpm: true
+
+php_fpm_pool_user:    nginx
+php_fpm_pool_group:   nginx
+
+
+# Set mongod service enabled state. Can be `true` (recommended) or `false`.
+mongod_enabled: true
+
+# Set initial mongod state. Recommended values: `started` or `stopped`.
+mongod_state: started
+
+# Set mongod state when configuration changes are made. Recommended values:
+# `restarted` or `reloaded`
+mongod_restart_state: restarted
+
+# MongoDB package state; use `present` to make sure it's installed, or `latest`
+# if you want to upgrade or switch versions using a new repo.
+mongodb_package_state: present
+
+# MongoDB package version to be installed
+mongodb_version:	3.6
+
+# MongoDB packages to be installed. The value of `mongodb-org` is used by
+# default, as it is the meta-package which pulls in the server, cli and other
+# tools.
+mongodb_packages:
+  - mongodb-org
+
+
+nginx_debug_output: true
+nginx_branch: stable
+
+nginx_status_enable: true
+nginx_unit_modules:
+    - unit-php

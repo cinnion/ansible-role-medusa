@@ -1,2 +1,120 @@
 ---
-# tasks file for ansible-roles-medusa
+- name: Push authorized SSH keys for root
+  copy:
+    src: /root/.ssh/authorized_keys
+    dest: /root/.ssh/authorized_keys
+    owner: root
+    mode: 0644
+
+- name: Include PHP 7.4 vars
+  include_vars:
+    file: php74-settings.yml
+
+- name: Install PHP 7.4
+  include_role:
+    name: geerlingguy.php
+
+#- name: Include PHP 8.0 vars
+#  include_vars:
+#    file: php80-settings.yml
+#
+#- name: Install PHP 8.0
+#  include_role:
+#    name: geerlingguy.php
+#  vars:
+#    php_version: "{{ php_version }}"
+#    php_enable_php_fpm: "{{ php_enable_php_fpm }}"
+#    php_fpm_daemon: "{{ php_fpm_daemon }}"
+#    php_webserver_daemon: "{{ php_webserver_daemon }}"
+#    php_webserver: "{{ php_webserver }}"
+#    php_enablerepo: "{{ php_enablerepo }}"
+#    php_packages: "{{ php_packages }}"
+#    php_fpm_pools: "{{ php_fpm_pools }}"
+
+# - name: Setup IUS repo
+#   import_role:
+#     name: ius-repo
+
+#- name: Setup git
+#  import_tasks: "setup-git.yml"
+
+# - name: Setup mongodb
+#   import_tasks: "setup-mongodb.yml"
+#
+# - include_role:
+#     name: nginxinc.nginx
+#
+# - name: Setup PHP
+#   import_tasks: "setup-php.yml"
+#
+# - name: Setup xdebug
+#   import_tasks: "setup-xdebug.yml"
+#
+# - name: Install packages from standard repos
+#   yum:
+#     name:
+#       - redis
+#       - ImageMagick
+#       - pkgconfig
+#       - sassc
+#     state: present
+#
+# - name: Install non-prompting PHP modules
+#   pear:
+#     name: "{{item}}"
+#     state: present
+#   with_items:
+#     - pecl/imagick
+#     - pecl/mongodb
+#
+# - name: Install redis
+#   shell: printf "no\nyes\n" | pecl install pecl/redis
+#
+# - include_role:
+#     name: geerlingguy.composer
+#
+# - include_role:
+#     name: geerlingguy.nodejs
+#
+# - name: Configure php-fpm
+#   ini_file:
+#     path: /etc/php-fpm.d/www.conf
+#     section: "{{item.section}}"
+#     option: "{{item.option}}"
+#     value: "{{item.value}}"
+#   with_items:
+#     - { section: "www", option: "listen", value: "/var/run/php-fpm/php-fpm.sock" }
+#     - { section: "www", option: "listen.owner", value: "nobody" }
+#     - { section: "www", option: "listen.group", value: "nobody" }
+#     - { section: "www", option: "listen.mode", value: "0660" }
+#
+# - name: Clone MEDUSA
+#   git:
+#     repo: 'https://github.com/TRMN/medusa.git'
+#     dest: /var/www/medusa
+#
+# - name: Create MEDUSA environment
+#   command: cp .env.example .env
+#   args:
+#     creates: .env
+#     chdir: /var/www/medusa
+#
+# - name: Install PHP dependencies
+#   command: composer install
+#   args:
+#     chdir: /var/www/medusa
+#
+# - name: Install node dependencies
+#   command: npm install
+#   args:
+#     chdir: /var/www/medusa
+#
+# - name: Do a node audit fix
+#   command: npm audit fix
+#   args:
+#     chdir: /var/www/medusa
+#
+# - name: Install MEDUSA server file
+#   command: cp server_configurations/nginx/medusa.dev /etc/nginx/servers/conf.d/medusa.conf
+#   args:
+#     creates: /etc/nginx/servers/conf.d/medusa.conf
