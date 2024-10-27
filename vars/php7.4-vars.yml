@@ -2,7 +2,7 @@
 php_version: '7.4'
 php_enable_php_fpm: true
 php_fpm_daemon: 'php74-php-fpm'
-php_fpm_pool_conf_path: '/etc/opt/remi/php74/php-fpm.d/www74.conf'
+php_fpm_pool_conf_path: '/etc/opt/remi/php74/php-fpm.d/www.conf'
 php_webserver_daemon: 'nginx'
 php_webserver: "nginx"
 php_enablerepo: "remi-php74"
@@ -13,6 +13,8 @@ php_packages:
   - php74-php-devel
   - php74-php-fpm
   - php74-php-gd
+  - php74-php-intl
+  - php74-php-json
   - php74-php-mbstring
   - php74-php-opcache
   - php74-php-pdo
@@ -21,9 +23,11 @@ php_packages:
   - php74-php-pecl-imagick-im6
   - php74-php-pecl-xdebug3
   - php74-php-pgsql
+  - php74-php-process
   - php74-php-xml
   - php74-php-zip
   - unzip
+  - composer
 
 php_fpm_pools:
   - pool_name: www

@@ -2,7 +2,7 @@
 php_version: '8.0'
 php_enable_php_fpm: true
 php_fpm_daemon: 'php80-php-fpm'
-php_fpm_pool_conf_path: '/etc/opt/remi/php80/php-fpm.d'
+php_fpm_pool_conf_path: '/etc/opt/remi/php80/php-fpm.d/www.conf'
 php_webserver_daemon: 'nginx'
 php_webserver: "nginx"
 php_enablerepo: "remi-php80"
@@ -13,14 +13,18 @@ php_packages:
   - php80-php-devel
   - php80-php-fpm
   - php80-php-gd
+  - php80-php-intl
+  - php80-php-json
   - php80-php-mbstring
   - php80-php-opcache
   - php80-php-pdo
   - php80-php-pear
   - php80-php-pecl-apcu
   - php80-php-pgsql
+  - php80-php-process
   - php80-php-xml
   - php80-php-zip
+  - composer
 
 php_fpm_pools:
   - pool_name: www

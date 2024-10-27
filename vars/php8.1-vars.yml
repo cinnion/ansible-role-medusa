@@ -1,0 +1,40 @@
+---
+php_version: '8.1'
+php_enable_php_fpm: true
+php_fpm_daemon: 'php81-php-fpm'
+php_fpm_pool_conf_path: '/etc/opt/remi/php81/php-fpm.d/www.conf'
+php_webserver_daemon: 'nginx'
+php_webserver: "nginx"
+php_enablerepo: "remi-php81"
+php_packages:
+  - php81
+  - php81-php-cli
+  - php81-php-common
+  - php81-php-devel
+  - php81-php-fpm
+  - php81-php-gd
+  - php81-php-intl
+  - php81-php-json
+  - php81-php-mbstring
+  - php81-php-opcache
+  - php81-php-pdo
+  - php81-php-pear
+  - php81-php-pecl-apcu
+  - php81-php-pgsql
+  - php81-php-process
+  - php81-php-xml
+  - php81-php-zip
+  - composer
+
+php_fpm_pools:
+  - pool_name: www
+    pool_template: www.conf.j2
+    pool_listen: "/var/opt/remi/php81/run/php-fpm/socket"
+    pool_listen_allowed_clients: "127.0.0.1"
+    pool_pm: dynamic
+    pool_pm_max_children: 5
+    pool_pm_start_servers: 2
+    pool_pm_min_spare_servers: 1
+    pool_pm_max_spare_servers: 3
+    pool_pm_max_requests: 500
+    pool_pm_status_path: /status

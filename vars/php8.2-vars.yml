@@ -1,0 +1,40 @@
+---
+php_version: '8.2'
+php_enable_php_fpm: true
+php_fpm_daemon: 'php82-php-fpm'
+php_fpm_pool_conf_path: '/etc/opt/remi/php82/php-fpm.d/www.conf'
+php_webserver_daemon: 'nginx'
+php_webserver: "nginx"
+php_enablerepo: "remi-php82"
+php_packages:
+  - php82
+  - php82-php-cli
+  - php82-php-common
+  - php82-php-devel
+  - php82-php-fpm
+  - php82-php-gd
+  - php82-php-intl
+  - php82-php-json
+  - php82-php-mbstring
+  - php82-php-opcache
+  - php82-php-pdo
+  - php82-php-pear
+  - php82-php-pecl-apcu
+  - php82-php-pgsql
+  - php82-php-process
+  - php82-php-xml
+  - php82-php-zip
+  - composer
+
+php_fpm_pools:
+  - pool_name: www
+    pool_template: www.conf.j2
+    pool_listen: "/var/opt/remi/php82/run/php-fpm/socket"
+    pool_listen_allowed_clients: "127.0.0.1"
+    pool_pm: dynamic
+    pool_pm_max_children: 5
+    pool_pm_start_servers: 2
+    pool_pm_min_spare_servers: 1
+    pool_pm_max_spare_servers: 3
+    pool_pm_max_requests: 500
+    pool_pm_status_path: /status

@@ -1,7 +1,7 @@
 ---
 - name: Include PHP {{php_version}} vars
   include_vars:
-    file: "php{{ php_version }}-settings.yml"
+    file: "php{{ php_version }}-vars.yml"
 
 - name: Include PHP version module
   include_role:
@@ -21,31 +21,23 @@
     path: /etc/profile.d/system-module-defaults.sh
   register: st
 
+- name: Create system-module-defaults since it does not exist
+  file:
+    path: /etc/profile.d/system-module-defaults.sh
+    owner: root
+    group: root
+    mode: 0644
+    state: touch
+
 - name: Setup system wide default PHP version.
   lineinfile:
     path: /etc/profile.d/system-module-defaults.sh
-    regexp: '^module load php'
+    regexp: '^module load php[0-9][0-9]*$'
     line: 'module load php{{php_version | regex_replace("[.]", "") }}'
-    owner: root
-    group: root
-    mode: 0644
-    create: true
-  when: st.stat.exists is not defined or st.stat.exists == False
-
-- name: Change system wide default PHP version.
-  replace:
-    path: /etc/profile.d/system-module-defaults.sh
-    regexp: '^module load php'
-    replace: 'module load php{{php_version | regex_replace("[.]", "") }}'
-    owner: root
-    group: root
-    mode: 0644
-    create: true
-  when: st.stat.exists is defined and st.stat.exists == True
 
 - name: Update pecl channel
   command: 'pecl channel-update pecl.php.net'
-  
+
 - name: Install non-prompting PHP modules
   pear:
     name: "{{item}}"
@@ -53,8 +45,15 @@
   with_items:
     - pecl/mongodb
 
-#- name: Install imagick
-#  shell: printf "autodetect\nyes\n" | pecl install pecl/imagick
-
 - name: Install redis
   shell: printf "no\nyes\n" | pecl install pecl/redis
+
+- name: Clear system wide default PHP version.
+  lineinfile:
+    path: /etc/profile.d/system-module-defaults.sh
+    regexp: '^module load php[0-9][0-9]*$'
+    line: 'module load php{{php_version | regex_replace("[.]", "") }}'
+    state: absent
+
+- name: Disable the PHP {{ php_version }} module
+  command: "dnf -y module disable php:remi-{{ php_version }}"

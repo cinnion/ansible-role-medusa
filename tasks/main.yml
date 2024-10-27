@@ -20,10 +20,10 @@
     loop_var: php_version_item
 
 - name: Setup system wide default PHP version.
-  replace:
+  lineinfile:
     path: /etc/profile.d/system-module-defaults.sh
     regexp: '^module load php[0-9][0-9]*$'
-    replace: 'module load php{{php_versions[0] | regex_replace("[.]", "") }}'
+    line: 'module load php{{php_version | regex_replace("[.]", "") }}'
     owner: root
     group: root
     mode: 0644
@@ -34,13 +34,11 @@
 # - name: Setup xdebug
 #   import_tasks: "setup-xdebug.yml"
 
-- name: Install packages from standard repos
+- name: Install packages from standard repos not already installed.
   yum:
     name:
       - indent
       - redis
-      - ImageMagick
-      - ImageMagick-devel
       - sassc
     state: present
 

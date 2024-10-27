@@ -1,0 +1,40 @@
+---
+php_version: '8.3'
+php_enable_php_fpm: true
+php_fpm_daemon: 'php83-php-fpm'
+php_fpm_pool_conf_path: '/etc/opt/remi/php83/php-fpm.d/www.conf'
+php_webserver_daemon: 'nginx'
+php_webserver: "nginx"
+php_enablerepo: "remi-php83"
+php_packages:
+  - php83
+  - php83-php-cli
+  - php83-php-common
+  - php83-php-devel
+  - php83-php-fpm
+  - php83-php-gd
+  - php83-php-intl
+  - php83-php-json
+  - php83-php-mbstring
+  - php83-php-opcache
+  - php83-php-pdo
+  - php83-php-pear
+  - php83-php-pecl-apcu
+  - php83-php-pgsql
+  - php83-php-process
+  - php83-php-xml
+  - php83-php-zip
+  - composer
+
+php_fpm_pools:
+  - pool_name: www
+    pool_template: www.conf.j2
+    pool_listen: "/var/opt/remi/php83/run/php-fpm/socket"
+    pool_listen_allowed_clients: "127.0.0.1"
+    pool_pm: dynamic
+    pool_pm_max_children: 5
+    pool_pm_start_servers: 2
+    pool_pm_min_spare_servers: 1
+    pool_pm_max_spare_servers: 3
+    pool_pm_max_requests: 500
+    pool_pm_status_path: /status
