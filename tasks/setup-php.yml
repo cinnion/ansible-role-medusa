@@ -1,0 +1,60 @@
+---
+- name: Include PHP {{php_version}} vars
+  include_vars:
+    file: "php{{ php_version }}-settings.yml"
+
+- name: Include PHP version module
+  include_role:
+    name: geerlingguy.php-versions
+
+- name: Do the PHP {{php_version}} install
+  include_role:
+    name: geerlingguy.php
+
+#
+# Setup system wide default PHP version. This file must follow modules.sh in
+# /etc/profile.d alphabetically so that modules.sh is sourced by /etc/profile
+# first to provide the modules command.
+#
+- name: Check to see if system-module-defaults exists.
+  stat:
+    path: /etc/profile.d/system-module-defaults.sh
+  register: st
+
+- name: Setup system wide default PHP version.
+  lineinfile:
+    path: /etc/profile.d/system-module-defaults.sh
+    regexp: '^module load php'
+    line: 'module load php{{php_version | regex_replace("[.]", "") }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+  when: st.stat.exists is not defined or st.stat.exists == False
+
+- name: Change system wide default PHP version.
+  replace:
+    path: /etc/profile.d/system-module-defaults.sh
+    regexp: '^module load php'
+    replace: 'module load php{{php_version | regex_replace("[.]", "") }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+  when: st.stat.exists is defined and st.stat.exists == True
+
+- name: Update pecl channel
+  command: 'pecl channel-update pecl.php.net'
+  
+- name: Install non-prompting PHP modules
+  pear:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - pecl/mongodb
+
+#- name: Install imagick
+#  shell: printf "autodetect\nyes\n" | pecl install pecl/imagick
+
+- name: Install redis
+  shell: printf "no\nyes\n" | pecl install pecl/redis

@@ -12,12 +12,21 @@
 
 - name: Install PHP.
   include_tasks:
-    file: install-php.yml
+    file: setup-php.yml
   vars:
     php_version: "{{ php_version_item }}"
   loop: "{{ php_versions }}"
   loop_control:
     loop_var: php_version_item
+
+- name: Setup system wide default PHP version.
+  replace:
+    path: /etc/profile.d/system-module-defaults.sh
+    regexp: '^module load php[0-9][0-9]*$'
+    replace: 'module load php{{php_versions[0] | regex_replace("[.]", "") }}'
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Setup mongodb
   import_tasks: "setup-mongodb.yml"
@@ -28,23 +37,13 @@
 - name: Install packages from standard repos
   yum:
     name:
+      - indent
       - redis
       - ImageMagick
-      - pkgconfig
+      - ImageMagick-devel
       - sassc
     state: present
 
-# - name: Install non-prompting PHP modules
-#   pear:
-#     name: "{{item}}"
-#     state: present
-#   with_items:
-#     - pecl/imagick
-#     - pecl/mongodb
-#
-# - name: Install redis
-#   shell: printf "no\nyes\n" | pecl install pecl/redis
-#
 # - include_role:
 #     name: geerlingguy.composer
 #

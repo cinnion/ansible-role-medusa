@@ -18,6 +18,8 @@ php_packages:
   - php74-php-pdo
   - php74-php-pear
   - php74-php-pecl-apcu
+  - php74-php-pecl-imagick-im6
+  - php74-php-pecl-xdebug3
   - php74-php-pgsql
   - php74-php-xml
   - php74-php-zip
