@@ -1,0 +1,8 @@
+---
+# Subtasks for setting up https
+
+- name: Include variables for NGINX installation
+  include_vars: "nginx-vars.yml"
+
+- include_role:
+    name: geerlingguy.nginx

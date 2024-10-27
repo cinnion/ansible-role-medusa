@@ -1,0 +1,143 @@
+---
+nginx_remove_default_vhost: true
+
+nginx_vhosts:
+  - listen: "80"
+    server_name: "medusa.trmn.ka8zrt.com"
+    root: "/var/www/html"
+    index: "index.php index.html index.htm"
+    access_log: "/var/log/nginx/medusa_access.log"
+    error_log: "/var/log/nginx/medusa_error.log"
+    state: "present"
+    template: "{{ nginx_vhost_template }}"
+    filename: "medusa.conf"
+    extra_parameters: |
+      sendfile on;
+      tcp_nopush on;
+      
+      client_max_body_size 1G;
+      
+      proxy_connect_timeout 1800;
+      proxy_send_timeout 1800;
+      proxy_intercept_errors on;
+      proxy_redirect off;
+      
+      location ~ \..*/.*\.php$ {
+          return 403;
+      }
+      
+      location / {
+          try_files $uri $uri/index.html @rewrite;
+      }
+      
+      location @rewrite {
+          # Some modules enforce no slash (/) at the end of the URL
+          # Else this rewrite block wouldn't be needed (GlobalRedirect)
+          rewrite ^/(.*)$ /index.php?q=$1 last;
+      }
+      
+      location = /favicon.ico {
+          log_not_found off;
+          access_log off;
+      }
+      
+      location = /robots.txt {
+          log_not_found off;
+          access_log off;
+          allow all;
+      }
+      
+      location ~* \.(css|gif|ico|jpeg|jpg|js|png)$ {
+          expires max;
+          log_not_found off;
+      }
+      
+      location ~ '\.php$|^/update.php' {
+          try_files $uri =404;
+          fastcgi_split_path_info ^(.+?\.php)(|/.*)$;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param PATH_INFO $fastcgi_path_info if_not_empty;
+          fastcgi_param QUERY_STRING $query_string;
+          # Block httproxy attacks. See https://httpoxy.org/.
+          fastcgi_param HTTP_PROXY "";
+          fastcgi_index index.php;
+          fastcgi_intercept_errors on;
+          fastcgi_pass unix:/var/opt/remi/php74/run/php-fpm/socket;
+      }
+      
+      # error_page: "500 502 503 504 /50x.html"
+      # ssl_certificate     /etc/ssl/certs/ssl-cert-snakeoil.pem;
+      # ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+      # ssl_protocols       TLSv1.1 TLSv1.2;
+      # ssl_ciphers         HIGH:!aNULL:!MD5;
+
+  - listen: "80"
+    server_name: "medusa74.trmn.ka8zrt.com"
+    root: "/var/www/html"
+    index: "index.php index.html index.htm"
+    access_log: "/var/log/nginx/medusa_access.log"
+    error_log: "/var/log/nginx/medusa_error.log"
+    state: "present"
+    template: "{{ nginx_vhost_template }}"
+    filename: "medusa74.conf"
+    extra_parameters: |
+      sendfile on;
+      tcp_nopush on;
+    
+      client_max_body_size 1G;
+    
+      proxy_connect_timeout 1800;
+      proxy_send_timeout 1800;
+      proxy_intercept_errors on;
+      proxy_redirect off;
+    
+      location ~ \..*/.*\.php$ {
+          return 403;
+      }
+    
+      location / {
+          try_files $uri $uri/index.html @rewrite;
+      }
+    
+      location @rewrite {
+          # Some modules enforce no slash (/) at the end of the URL
+          # Else this rewrite block wouldn't be needed (GlobalRedirect)
+          rewrite ^/(.*)$ /index.php?q=$1 last;
+      }
+    
+      location = /favicon.ico {
+          log_not_found off;
+          access_log off;
+      }
+    
+      location = /robots.txt {
+          log_not_found off;
+          access_log off;
+          allow all;
+      }
+    
+      location ~* \.(css|gif|ico|jpeg|jpg|js|png)$ {
+          expires max;
+          log_not_found off;
+      }
+    
+      location ~ '\.php$|^/update.php' {
+          try_files $uri =404;
+          fastcgi_split_path_info ^(.+?\.php)(|/.*)$;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param PATH_INFO $fastcgi_path_info if_not_empty;
+          fastcgi_param QUERY_STRING $query_string;
+          # Block httproxy attacks. See https://httpoxy.org/.
+          fastcgi_param HTTP_PROXY "";
+          fastcgi_index index.php;
+          fastcgi_intercept_errors on;
+          fastcgi_pass unix:/var/opt/remi/php74/run/php-fpm/socket;
+      }
+    
+      # error_page: "500 502 503 504 /50x.html"
+      # ssl_certificate     /etc/ssl/certs/ssl-cert-snakeoil.pem;
+      # ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+      # ssl_protocols       TLSv1.1 TLSv1.2;
+      # ssl_ciphers         HIGH:!aNULL:!MD5;

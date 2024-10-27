@@ -6,6 +6,10 @@
     owner: root
     mode: 0644
 
+- name: Install nginx
+  include_tasks:
+    file: setup-nginx.yml
+
 - name: Install PHP.
   include_tasks:
     file: install-php.yml
