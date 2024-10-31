@@ -20,11 +20,14 @@ php_packages:
   - php81-php-pdo
   - php81-php-pear
   - php81-php-pecl-apcu
+  - php81-php-pecl-imagick-im6
+  - php81-php-pecl-mongodb
+  - php81-php-pecl-redis6
+  - php81-php-pecl-xdebug3
   - php81-php-pgsql
   - php81-php-process
   - php81-php-xml
   - php81-php-zip
-  - composer
 
 php_fpm_pools:
   - pool_name: www

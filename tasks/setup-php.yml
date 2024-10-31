@@ -45,8 +45,8 @@
   with_items:
     - pecl/mongodb
 
-- name: Install redis
-  shell: printf "no\nyes\n" | pecl install pecl/redis
+#- name: Install redis
+#  shell: printf "no\nyes\n" | pecl install pecl/redis
 
 - name: Clear system wide default PHP version.
   lineinfile:

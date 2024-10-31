@@ -1,0 +1,9 @@
+---
+- name: Create medusa user
+  user:
+    name: medusa
+    password: "{{ lookup('password', 'credentials/medusa-medusa-password length=15') }}"
+    uid: 2000
+    groups: nginx
+    comment: Medusa user
+    create_home: true

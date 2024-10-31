@@ -52,3 +52,5 @@ nginx_branch: stable
 nginx_status_enable: true
 nginx_unit_modules:
     - unit-php
+
+nodejs_version: "20.x"

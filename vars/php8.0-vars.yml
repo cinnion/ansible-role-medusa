@@ -20,11 +20,14 @@ php_packages:
   - php80-php-pdo
   - php80-php-pear
   - php80-php-pecl-apcu
+  - php80-php-pecl-imagick-im6
+  - php80-php-pecl-mongodb
+  - php80-php-pecl-redis6
+  - php80-php-pecl-xdebug3
   - php80-php-pgsql
   - php80-php-process
   - php80-php-xml
   - php80-php-zip
-  - composer
 
 php_fpm_pools:
   - pool_name: www

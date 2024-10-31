@@ -23,16 +23,16 @@
   lineinfile:
     path: /etc/profile.d/system-module-defaults.sh
     regexp: '^module load php[0-9][0-9]*$'
-    line: 'module load php{{php_version | regex_replace("[.]", "") }}'
+    line: 'module load php{{php_versions[0] | regex_replace("[.]", "") }}'
     owner: root
     group: root
     mode: 0644
 
+- include_role:
+    name: geerlingguy.composer
+
 - name: Setup mongodb
   import_tasks: "setup-mongodb.yml"
-
-# - name: Setup xdebug
-#   import_tasks: "setup-xdebug.yml"
 
 - name: Install packages from standard repos not already installed.
   yum:
@@ -42,50 +42,20 @@
       - sassc
     state: present
 
-# - include_role:
-#     name: geerlingguy.composer
-#
-# - include_role:
-#     name: geerlingguy.nodejs
-#
-# - name: Configure php-fpm
-#   ini_file:
-#     path: /etc/php-fpm.d/www.conf
-#     section: "{{item.section}}"
-#     option: "{{item.option}}"
-#     value: "{{item.value}}"
-#   with_items:
-#     - { section: "www", option: "listen", value: "/var/run/php-fpm/php-fpm.sock" }
-#     - { section: "www", option: "listen.owner", value: "nobody" }
-#     - { section: "www", option: "listen.group", value: "nobody" }
-#     - { section: "www", option: "listen.mode", value: "0660" }
-#
-# - name: Clone MEDUSA
-#   git:
-#     repo: 'https://github.com/TRMN/medusa.git'
-#     dest: /var/www/medusa
-#
-# - name: Create MEDUSA environment
-#   command: cp .env.example .env
-#   args:
-#     creates: .env
-#     chdir: /var/www/medusa
-#
-# - name: Install PHP dependencies
-#   command: composer install
-#   args:
-#     chdir: /var/www/medusa
-#
-# - name: Install node dependencies
-#   command: npm install
-#   args:
-#     chdir: /var/www/medusa
-#
-# - name: Do a node audit fix
-#   command: npm audit fix
-#   args:
-#     chdir: /var/www/medusa
-#
+# Apparently nodejs.org is still signing with SHA1, which is now
+# disabled. To undo this, set it back to 'DEFAULT'
+- name: Enable SHA1 package signing for nodejs
+  command: update-crypto-policies --set DEFAULT:SHA1
+
+- include_role:
+    name: geerlingguy.nodejs
+
+- name: Setup MEDUSA user
+  include_tasks: setup-medusa-user.yml
+
+- name: Setup MEDUSA code
+  include_tasks: setup-medusa.yml
+
 # - name: Install MEDUSA server file
 #   command: cp server_configurations/nginx/medusa.dev /etc/nginx/servers/conf.d/medusa.conf
 #   args:

@@ -1,0 +1,124 @@
+---
+- name: Fix SELinux file context on subdirectories.
+  sefcontext:
+    target: '/var/www/html/storage(/.*)?'
+    setype: httpd_sys_rw_content_t
+    seuser: system_u
+    state: present
+
+- name: Fix /var/www/html ownership
+  file:
+    path: /var/www/html
+    owner: medusa
+    group: nginx
+    mode: 0755
+    state: directory
+
+- name: Clone MEDUSA
+  git:
+    repo: 'https://github.com/TRMN/medusa.git'
+    dest: /var/www/html
+  become: true
+  become_user: medusa
+
+- name: Create MEDUSA environment
+  command: cp .env.example .env
+  args:
+    creates: .env
+    chdir: /var/www/html
+  become: true
+  become_user: medusa
+
+- name: Create missing subdirectories
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: true
+    owner: medusa
+    group: nginx
+    mode: 0770
+    setype: httpd_sys_rw_content_t
+    seuser: system_u
+  with_items:
+    - "/var/www/html/storage/framework/cache"
+    - "/var/www/html/storage/framework/sessions"
+    - "/var/www/html/storage/framework/views"
+
+
+#- name: Install composer dependencies
+#  composer:
+#    command: install
+#    working_dir: /var/www/html
+#  become: true
+#  become_user: medusa
+
+- name: Install composer dependencies
+  command: "/opt/remi/php74/root/usr/bin/php /usr/local/bin/composer install"
+  args:
+    chdir: /var/www/html
+  become: true
+  become_user: medusa
+  environment:
+    PATH: ":/usr/local/bin:/sbin:/usr/sbin:/usr/bin/opt/remi/php74/root/usr/bin/php"
+
+# This will almost always fail, which is why we do the `npm audit fix`
+# afterwards.
+- name: Install node dependencies
+  command: npm install
+  args:
+    chdir: /var/www/html
+  become: true
+  become_user: medusa
+  register: npm
+  ignore_errors: true
+
+- name: Do a node audit fix
+  command: npm audit fix
+  args:
+    chdir: /var/www/html
+  become: true
+  become_user: medusa
+  ignore_errors: true
+
+- name: Generate application key
+  command: "/opt/remi/php74/root/usr/bin/php artisan key:generate"
+  args:
+    chdir: /var/www/html
+  become: true
+  become_user: medusa
+
+- name: Copy and extract trmn.tar.gz to /tmp/trmn/
+  unarchive:
+    src: trmn.tar.gz
+    dest: /tmp
+
+- name: Make sure mongod is running before the handler is even called.
+  service:
+    name: mongod
+    state: "{{mongod_state}}"
+    enabled: "{{mongod_enabled}}"
+  when:
+    - mongod_enabled
+    - mongodb_version is defined
+    - mongodb_version in [6.0, 7.0, 8.0]
+
+- name: Import the database
+  command: "mongorestore --db=trmn --drop ."
+  args:
+    chdir: /tmp/trmn
+
+- name: Fix ownerships
+  file:
+    path: /var/www/html
+    owner: medusa
+    group: nginx
+    recurse: true
+    seuser: system_u
+
+- name: Fix permissions
+  file:
+    path: /var/www/html/storage
+    mode: 0775
+    recurse: true
+    setype: httpd_sys_content_rw_t
+    seuser: system_u
