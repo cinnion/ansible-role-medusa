@@ -1,0 +1,30 @@
+---
+# Playbook to take a RedHat/CentOS minimal and make a MEDUSA server
+
+- hosts: medusa
+
+  pre_tasks:
+    - include_role:
+        name: vm-restart
+
+    - include_role:
+        name: vm-restart
+        tasks_from: update.yml
+
+    - include_role:
+        name: medusa
+        tasks_from: pre-tasks.yml
+
+  tasks:
+    - name: Install miscellaneous packages
+      dnf:
+        name:
+          - emacs
+          - rsync
+          - tar
+          - xauth
+          - xterm
+        state: latest
+
+  roles:
+    - medusa

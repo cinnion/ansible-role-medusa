@@ -55,8 +55,3 @@
 
 - name: Setup MEDUSA code
   include_tasks: setup-medusa.yml
-
-# - name: Install MEDUSA server file
-#   command: cp server_configurations/nginx/medusa.dev /etc/nginx/servers/conf.d/medusa.conf
-#   args:
-#     creates: /etc/nginx/servers/conf.d/medusa.conf

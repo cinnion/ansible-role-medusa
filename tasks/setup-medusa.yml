@@ -44,14 +44,6 @@
     - "/var/www/html/storage/framework/sessions"
     - "/var/www/html/storage/framework/views"
 
-
-#- name: Install composer dependencies
-#  composer:
-#    command: install
-#    working_dir: /var/www/html
-#  become: true
-#  become_user: medusa
-
 - name: Install composer dependencies
   command: "/opt/remi/php74/root/usr/bin/php /usr/local/bin/composer install"
   args:
